@@ -15,7 +15,7 @@ screen = pygame.display.set_mode((800, 400))
 pygame.display.set_caption('Runner')
 clock = pygame.time.Clock()
 test_font = pygame.font.Font('fonts/Pixeltype.ttf',50)
-
+game_active = True
 
 sky_surface = pygame.image.load('graphics/Sky.png').convert()
 ground_surface = pygame.image.load('graphics/Ground.png').convert()
@@ -37,44 +37,64 @@ while True:
             pygame.quit()
             exit()
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and player_rect.bottom == 300:
                 player_gravity = -20
             
         if event.type == pygame.KEYUP:
             print("Key up")
 
-           
-            
-            """
+        if event.type == pygame.MOUSEMOTION:
+            if player_rect.collidepoint(event.pos):
+                print("Collision event")
+        
         if event.type == pygame.MOUSEBUTTONDOWN:
+            if player_rect.collidepoint(event.pos) and player_rect.bottom == 300:
+                player_gravity = -20
+                print("Collision event")
+                
             print("mouse down")
-            """
+        
+    if game_active:    
+        screen.blit(sky_surface, (0,0))
+        screen.blit(ground_surface, (0,300))
+        
+        pygame.draw.rect(screen, 0xc0e8ec , score_rect)
+        pygame.draw.rect(screen, 0xc0e8ec , score_rect, 10)
+        screen.blit(score_surf,(score_rect))
+        
+        """
+        snail_x_pos -= 4
+        if snail_x_pos < -50:
+            snail_x_pos = 775
+        screen.blit(snail_surface, (snail_x_pos,250))
+        """
+        
+        snail_rect.right -= 4
+        if snail_rect.right < 0:
+            snail_rect.right = 850
+        screen.blit(snail_surface, snail_rect)
+        
+        #player
+        player_gravity += 1
+        player_rect.y += player_gravity
+        if player_rect.bottom >= 300:
+            player_rect.bottom = 300
+        
+        screen.blit(player_surf, player_rect)
+        
+        # collision
+        if snail_rect.colliderect(player_rect):
+            game_active = False
+            #pygame.quit()
+            #exit()
             
-    screen.blit(sky_surface, (0,0))
-    screen.blit(ground_surface, (0,300))
+    else:
+        screen.fill((200,200,200))
+
+
     
-    pygame.draw.rect(screen, 0xc0e8ec , score_rect)
-    pygame.draw.rect(screen, 0xc0e8ec , score_rect, 10)
-    screen.blit(score_surf,(score_rect))
-    
-    
-    
-    """
-    snail_x_pos -= 4
-    if snail_x_pos < -50:
-        snail_x_pos = 775
-    screen.blit(snail_surface, (snail_x_pos,250))
-    """
-    
-    snail_rect.right -= 4
-    if snail_rect.right < 0:
-        snail_rect.right = 850
-    screen.blit(snail_surface, snail_rect)
-    
-    #player
-    player_gravity += 1
-    player_rect.y += player_gravity
-    screen.blit(player_surf, player_rect)
+    pygame.display.update()
+    clock.tick(60)
     
     
     
@@ -94,13 +114,6 @@ while True:
     if player_rect.collidepoint(mouse_pos):
         print(pygame.mouse.get_pressed())
     """
-    
-    pygame.display.update()
-    clock.tick(60)
-    
-    
-    
-    
     
     
     
